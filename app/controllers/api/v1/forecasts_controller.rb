@@ -6,6 +6,9 @@ module Api
       rescue_from Errors::BadRequestError, with: :render_bad_request
       rescue_from Errors::InvalidAddressError, with: :render_unprocessable
       rescue_from Errors::InvalidResponseError, with: :render_unprocessable
+      rescue_from Errors::TimeoutError, with: :render_bad_gateway
+      rescue_from Errors::RateLimitError, with: :render_bad_gateway
+      rescue_from Errors::UpstreamError, with: :render_bad_gateway
 
       def show
         address = params[:address].to_s.strip
@@ -28,6 +31,10 @@ module Api
 
       def render_unprocessable(exception)
         render json: { error: exception.message }, status: :unprocessable_content
+      end
+
+      def render_bad_gateway(exception)
+        render json: { error: exception.message }, status: :bad_gateway
       end
     end
   end
