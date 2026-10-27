@@ -4,6 +4,8 @@ module Api
       ALLOWED_TEMPERATURE_UNITS = %w[fahrenheit celsius].freeze
 
       rescue_from Errors::BadRequestError, with: :render_bad_request
+      rescue_from Errors::InvalidAddressError, with: :render_unprocessable
+      rescue_from Errors::InvalidResponseError, with: :render_unprocessable
 
       def show
         address = params[:address].to_s.strip
@@ -22,6 +24,10 @@ module Api
 
       def render_bad_request(exception)
         render json: { error: exception.message }, status: :bad_request
+      end
+
+      def render_unprocessable(exception)
+        render json: { error: exception.message }, status: :unprocessable_content
       end
     end
   end
