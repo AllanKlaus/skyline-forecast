@@ -158,5 +158,36 @@ RSpec.describe "Api::V1::Forecasts", type: :request do
       expect(response.parsed_body).to include("error")
     end
 
+    it "returns 502 when an upstream request times out",
+       vcr: { cassette_name: "forecasts/upstream_timeout" } do
+      get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS }
+
+      expect(response).to have_http_status(:bad_gateway)
+      expect(response.parsed_body).to include("error")
+    end
+
+    it "returns 502 when an upstream API returns 429",
+       vcr: { cassette_name: "forecasts/upstream_rate_limit" } do
+      get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS }
+
+      expect(response).to have_http_status(:bad_gateway)
+      expect(response.parsed_body).to include("error")
+    end
+
+    it "returns 502 when an upstream API returns 5xx",
+       vcr: { cassette_name: "forecasts/upstream_server_error" } do
+      get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS }
+
+      expect(response).to have_http_status(:bad_gateway)
+      expect(response.parsed_body).to include("error")
+    end
+
+    it "returns 502 when DNS resolution fails",
+       vcr: { cassette_name: "forecasts/upstream_dns_failure" } do
+      get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS }
+
+      expect(response).to have_http_status(:bad_gateway)
+      expect(response.parsed_body).to include("error")
+    end
   end
 end
