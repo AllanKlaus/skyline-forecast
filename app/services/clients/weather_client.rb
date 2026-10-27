@@ -1,6 +1,6 @@
 module Clients
   class WeatherClient
-    BASE_URL = "https://api.open-meteo.com"
+    BASE_URL = "https://api.open-meteo.com".freeze
 
     CONDITION_BY_CODE = {
       0 => "Clear sky",

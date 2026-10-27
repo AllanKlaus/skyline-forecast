@@ -1,0 +1,14 @@
+exclude_paths:
+  - vendor
+  - db
+  - bin
+  - spec
+  - config
+  - test
+
+detectors:
+  IrresponsibleModule:
+    enabled: false
+  UncommunicativeModuleName:
+    accept:
+      - "/V\\d+/"

@@ -1,7 +1,7 @@
 class ForecastLookup
   CACHE_TTL = 30.minutes
   RACE_CONDITION_TTL = 10.seconds
-  CACHE_KEY_PREFIX = "forecast:zip"
+  CACHE_KEY_PREFIX = "forecast:zip".freeze
 
   def self.call(address:, temperature_unit: "fahrenheit")
     new(address:, temperature_unit:).call

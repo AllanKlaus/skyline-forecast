@@ -1,6 +1,6 @@
 module Clients
   class GeocodingClient
-    BASE_URL = "https://nominatim.openstreetmap.org"
+    BASE_URL = "https://nominatim.openstreetmap.org".freeze
 
     def self.lookup(address)
       new.lookup(address)
