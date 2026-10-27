@@ -1,4 +1,8 @@
 class ForecastLookup
+  CACHE_TTL = 30.minutes
+  RACE_CONDITION_TTL = 10.seconds
+  CACHE_KEY_PREFIX = "forecast:zip"
+
   def self.call(address:, temperature_unit: "fahrenheit")
     new(address:, temperature_unit:).call
   end
@@ -9,17 +13,12 @@ class ForecastLookup
   end
 
   def call
-    {
-      address: @address,
-      zip_code: location[:zip_code],
-      cached: false,
-      current_temperature: weather[:current_temperature],
-      high: weather[:high],
-      low: weather[:low],
-      temperature_unit: weather[:temperature_unit],
-      condition: weather[:condition],
-      extended_forecast: weather[:extended_forecast]
-    }
+    cached = true
+    result = Rails.cache.fetch(cache_key, expires_in: CACHE_TTL, race_condition_ttl: RACE_CONDITION_TTL) do
+      cached = false
+      payload
+    end
+    result.merge(address: @address, cached:)
   end
 
   private
@@ -34,6 +33,23 @@ class ForecastLookup
       longitude: location[:longitude],
       temperature_unit: @temperature_unit
     )
+  end
+
+  def cache_key
+    @cache_key ||= "#{CACHE_KEY_PREFIX}:#{location[:zip_code]}:#{@temperature_unit}"
+  end
+
+  def payload
+    @payload ||= {
+      address: @address,
+      zip_code: location[:zip_code],
+      current_temperature: weather[:current_temperature],
+      high: weather[:high],
+      low: weather[:low],
+      temperature_unit: weather[:temperature_unit],
+      condition: weather[:condition],
+      extended_forecast: weather[:extended_forecast]
+    }
   end
 
   private_class_method :new
