@@ -1,0 +1,175 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://nominatim.openstreetmap.org/search?addressdetails=1&format=json&limit=1&q=1600%20Amphitheatre%20Parkway,%20Mountain%20View,%20CA%2094043
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - weather-forecast-api/1.0 (contato@allanklaus.com.br)
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '790'
+      Content-Type:
+      - application/json; charset=utf-8
+      Server:
+      - gunicorn/asgi
+      X-Nominatim-Server:
+      - dulcy.openstreetmap.org
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Wed, 28 Oct 2026 02:01:32 GMT
+      Via:
+      - 1.1 varnish
+      Age:
+      - '58'
+      X-Served-By:
+      - cache-gru-sbgr1930072-GRU
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Timer:
+      - S1793152893.713834,VS0,VE3
+      Vary:
+      - accept-language, Accept-Encoding
+      Strict-Transport-Security:
+      - max-age=300
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        W3sicGxhY2VfaWQiOjMyMzYxOTUyNiwibGljZW5jZSI6IkRhdGEgwqkgT3BlblN0cmVldE1hcCBjb250cmlidXRvcnMsIE9EYkwgMS4wLiBodHRwOi8vb3NtLm9yZy9jb3B5cmlnaHQiLCJvc21fdHlwZSI6IndheSIsIm9zbV9pZCI6MjM3MzM2NTksImxhdCI6IjM3LjQyMjQ4NTgiLCJsb24iOiItMTIyLjA4NTU4NDYiLCJjbGFzcyI6ImJ1aWxkaW5nIiwidHlwZSI6ImNvbW1lcmNpYWwiLCJwbGFjZV9yYW5rIjozMCwiaW1wb3J0YW5jZSI6Ni4yNzc5NDMwODM4NDM3NzRlLTA1LCJhZGRyZXNzdHlwZSI6ImJ1aWxkaW5nIiwibmFtZSI6Ikdvb2dsZSBCdWlsZGluZyA0MSIsImRpc3BsYXlfbmFtZSI6Ikdvb2dsZSBCdWlsZGluZyA0MSwgMTYwMCwgQW1waGl0aGVhdHJlIFBhcmt3YXksIE1vdW50YWluIFZpZXcsIFNhbnRhIENsYXJhIENvdW50eSwgQ2FsaWZvcm5pYSwgOTQwNDMsIFVuaXRlZCBTdGF0ZXMiLCJhZGRyZXNzIjp7ImJ1aWxkaW5nIjoiR29vZ2xlIEJ1aWxkaW5nIDQxIiwiaG91c2VfbnVtYmVyIjoiMTYwMCIsInJvYWQiOiJBbXBoaXRoZWF0cmUgUGFya3dheSIsImNpdHkiOiJNb3VudGFpbiBWaWV3IiwiY291bnR5IjoiU2FudGEgQ2xhcmEgQ291bnR5Iiwic3RhdGUiOiJDYWxpZm9ybmlhIiwiSVNPMzE2Ni0yLWx2bDQiOiJVUy1DQSIsInBvc3Rjb2RlIjoiOTQwNDMiLCJjb3VudHJ5IjoiVW5pdGVkIFN0YXRlcyIsImNvdW50cnlfY29kZSI6InVzIn0sImJvdW5kaW5nYm94IjpbIjM3LjQyMjExMjQiLCIzNy40MjI4NTA4IiwiLTEyMi4wODU5ODY4IiwiLTEyMi4wODUxNTExIl19XQ==
+  recorded_at: Wed, 28 Oct 2026 02:01:32 GMT
+- request:
+    method: get
+    uri: https://api.open-meteo.com/v1/forecast?current=temperature_2m&daily=temperature_2m_max,temperature_2m_min,weather_code&forecast_days=7&latitude=37.4224858&longitude=-122.0855846&temperature_unit=fahrenheit&timezone=auto
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Faraday v2.15.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 28 Oct 2026 02:01:33 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJsYXRpdHVkZSI6MzcuNDE2MiwibG9uZ2l0dWRlIjotMTIyLjA4MDMsImdlbmVyYXRpb250aW1lX21zIjo2Mi4zNzEwMTU1NDg3MDYwNTUsInV0Y19vZmZzZXRfc2Vjb25kcyI6LTI1MjAwLCJ0aW1lem9uZSI6IkFtZXJpY2EvTG9zX0FuZ2VsZXMiLCJ0aW1lem9uZV9hYmJyZXZpYXRpb24iOiJHTVQtNyIsImVsZXZhdGlvbiI6MTEuMCwiY3VycmVudF91bml0cyI6eyJ0aW1lIjoiaXNvODYwMSIsImludGVydmFsIjoic2Vjb25kcyIsInRlbXBlcmF0dXJlXzJtIjoiwrBGIn0sImN1cnJlbnQiOnsidGltZSI6IjIwMjYtMTAtMjdUMTk6MDAiLCJpbnRlcnZhbCI6OTAwLCJ0ZW1wZXJhdHVyZV8ybSI6NTcuNX0sImRhaWx5X3VuaXRzIjp7InRpbWUiOiJpc284NjAxIiwidGVtcGVyYXR1cmVfMm1fbWF4IjoiwrBGIiwidGVtcGVyYXR1cmVfMm1fbWluIjoiwrBGIiwid2VhdGhlcl9jb2RlIjoid21vIGNvZGUifSwiZGFpbHkiOnsidGltZSI6WyIyMDI2LTEwLTI3IiwiMjAyNi0xMC0yOCIsIjIwMjYtMTAtMjkiLCIyMDI2LTEwLTMwIiwiMjAyNi0xMC0zMSIsIjIwMjYtMTEtMDEiLCIyMDI2LTExLTAyIl0sInRlbXBlcmF0dXJlXzJtX21heCI6WzY3LjEsNjguMCw2OC41LDY4LjMsNjUuNCw3Mi4zLDczLjNdLCJ0ZW1wZXJhdHVyZV8ybV9taW4iOls1MC4wLDQ1LjksNDYuMSw1NC45LDU0LjQsNTYuMCw1OC41XSwid2VhdGhlcl9jb2RlIjpbMywzLDMsMywzLDMsM119fQ==
+  recorded_at: Wed, 28 Oct 2026 02:01:33 GMT
+- request:
+    method: get
+    uri: https://nominatim.openstreetmap.org/search?addressdetails=1&format=json&limit=1&q=1600%20Amphitheatre%20Parkway,%20Mountain%20View,%20CA%2094043
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - weather-forecast-api/1.0 (contato@allanklaus.com.br)
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '790'
+      Content-Type:
+      - application/json; charset=utf-8
+      Server:
+      - gunicorn/asgi
+      X-Nominatim-Server:
+      - dulcy.openstreetmap.org
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Wed, 28 Oct 2026 02:01:34 GMT
+      Via:
+      - 1.1 varnish
+      Age:
+      - '60'
+      X-Served-By:
+      - cache-gru-sbgr1930040-GRU
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Timer:
+      - S1793152895.935316,VS0,VE4
+      Vary:
+      - accept-language, Accept-Encoding
+      Strict-Transport-Security:
+      - max-age=300
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        W3sicGxhY2VfaWQiOjMyMzYxOTUyNiwibGljZW5jZSI6IkRhdGEgwqkgT3BlblN0cmVldE1hcCBjb250cmlidXRvcnMsIE9EYkwgMS4wLiBodHRwOi8vb3NtLm9yZy9jb3B5cmlnaHQiLCJvc21fdHlwZSI6IndheSIsIm9zbV9pZCI6MjM3MzM2NTksImxhdCI6IjM3LjQyMjQ4NTgiLCJsb24iOiItMTIyLjA4NTU4NDYiLCJjbGFzcyI6ImJ1aWxkaW5nIiwidHlwZSI6ImNvbW1lcmNpYWwiLCJwbGFjZV9yYW5rIjozMCwiaW1wb3J0YW5jZSI6Ni4yNzc5NDMwODM4NDM3NzRlLTA1LCJhZGRyZXNzdHlwZSI6ImJ1aWxkaW5nIiwibmFtZSI6Ikdvb2dsZSBCdWlsZGluZyA0MSIsImRpc3BsYXlfbmFtZSI6Ikdvb2dsZSBCdWlsZGluZyA0MSwgMTYwMCwgQW1waGl0aGVhdHJlIFBhcmt3YXksIE1vdW50YWluIFZpZXcsIFNhbnRhIENsYXJhIENvdW50eSwgQ2FsaWZvcm5pYSwgOTQwNDMsIFVuaXRlZCBTdGF0ZXMiLCJhZGRyZXNzIjp7ImJ1aWxkaW5nIjoiR29vZ2xlIEJ1aWxkaW5nIDQxIiwiaG91c2VfbnVtYmVyIjoiMTYwMCIsInJvYWQiOiJBbXBoaXRoZWF0cmUgUGFya3dheSIsImNpdHkiOiJNb3VudGFpbiBWaWV3IiwiY291bnR5IjoiU2FudGEgQ2xhcmEgQ291bnR5Iiwic3RhdGUiOiJDYWxpZm9ybmlhIiwiSVNPMzE2Ni0yLWx2bDQiOiJVUy1DQSIsInBvc3Rjb2RlIjoiOTQwNDMiLCJjb3VudHJ5IjoiVW5pdGVkIFN0YXRlcyIsImNvdW50cnlfY29kZSI6InVzIn0sImJvdW5kaW5nYm94IjpbIjM3LjQyMjExMjQiLCIzNy40MjI4NTA4IiwiLTEyMi4wODU5ODY4IiwiLTEyMi4wODUxNTExIl19XQ==
+  recorded_at: Wed, 28 Oct 2026 02:01:34 GMT
+- request:
+    method: get
+    uri: https://api.open-meteo.com/v1/forecast?current=temperature_2m&daily=temperature_2m_max,temperature_2m_min,weather_code&forecast_days=7&latitude=37.4224858&longitude=-122.0855846&temperature_unit=celsius&timezone=auto
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Faraday v2.15.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 28 Oct 2026 02:01:35 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJsYXRpdHVkZSI6MzcuNDE2MiwibG9uZ2l0dWRlIjotMTIyLjA4MDMsImdlbmVyYXRpb250aW1lX21zIjoxLjgzMzQzODg3MzI5MTAxNTYsInV0Y19vZmZzZXRfc2Vjb25kcyI6LTI1MjAwLCJ0aW1lem9uZSI6IkFtZXJpY2EvTG9zX0FuZ2VsZXMiLCJ0aW1lem9uZV9hYmJyZXZpYXRpb24iOiJHTVQtNyIsImVsZXZhdGlvbiI6MTEuMCwiY3VycmVudF91bml0cyI6eyJ0aW1lIjoiaXNvODYwMSIsImludGVydmFsIjoic2Vjb25kcyIsInRlbXBlcmF0dXJlXzJtIjoiwrBDIn0sImN1cnJlbnQiOnsidGltZSI6IjIwMjYtMTAtMjdUMTk6MDAiLCJpbnRlcnZhbCI6OTAwLCJ0ZW1wZXJhdHVyZV8ybSI6MTQuMn0sImRhaWx5X3VuaXRzIjp7InRpbWUiOiJpc284NjAxIiwidGVtcGVyYXR1cmVfMm1fbWF4IjoiwrBDIiwidGVtcGVyYXR1cmVfMm1fbWluIjoiwrBDIiwid2VhdGhlcl9jb2RlIjoid21vIGNvZGUifSwiZGFpbHkiOnsidGltZSI6WyIyMDI2LTEwLTI3IiwiMjAyNi0xMC0yOCIsIjIwMjYtMTAtMjkiLCIyMDI2LTEwLTMwIiwiMjAyNi0xMC0zMSIsIjIwMjYtMTEtMDEiLCIyMDI2LTExLTAyIl0sInRlbXBlcmF0dXJlXzJtX21heCI6WzE5LjUsMjAuMCwyMC4zLDIwLjIsMTguNSwyMi40LDIzLjBdLCJ0ZW1wZXJhdHVyZV8ybV9taW4iOlsxMC4wLDcuNyw3LjgsMTIuNywxMi40LDEzLjQsMTQuN10sIndlYXRoZXJfY29kZSI6WzMsMywzLDMsMywzLDNdfX0=
+  recorded_at: Wed, 28 Oct 2026 02:01:35 GMT
+recorded_with: VCR 6.4.0
