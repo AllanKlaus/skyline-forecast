@@ -1,0 +1,25 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://nominatim.openstreetmap.org/search?addressdetails=1&format=json&limit=1&q=1600%20Amphitheatre%20Parkway,%20Mountain%20View,%20CA%2094043
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - weather-forecast-api/1.0
+      Accept:
+      - application/json
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: "not-json"
+  recorded_at: Wed, 28 Oct 2026 02:00:00 GMT
+recorded_with: VCR 6.4.0

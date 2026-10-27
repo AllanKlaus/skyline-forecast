@@ -134,5 +134,29 @@ RSpec.describe "Api::V1::Forecasts", type: :request do
       ).to have_been_made.once
     end
 
+    it "returns 422 when the address cannot be geocoded",
+       vcr: { cassette_name: "forecasts/geocode_not_found" } do
+      get "/api/v1/forecasts", params: { address: "Nowhere Land" }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.parsed_body).to include("error" => a_string_matching(/not found/i))
+    end
+
+    it "returns 422 when geocoding result has no zip code",
+       vcr: { cassette_name: "forecasts/geocode_no_zip" } do
+      get "/api/v1/forecasts", params: { address: "Some Place" }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.parsed_body).to include("error" => a_string_matching(/zip/i))
+    end
+
+    it "returns 422 when an upstream payload is not parseable JSON",
+       vcr: { cassette_name: "forecasts/geocode_invalid_json" } do
+      get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.parsed_body).to include("error")
+    end
+
   end
 end
