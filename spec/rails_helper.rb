@@ -15,6 +15,12 @@ rescue ActiveRecord::PendingMigrationError => error
   abort error.to_s.strip
 end
 RSpec.configure do |config|
+  config.include ActiveSupport::Testing::TimeHelpers
+
+  config.before(:each) do
+    Rails.cache.clear
+  end
+
   config.fixture_paths = [
     Rails.root.join("spec/fixtures")
   ]

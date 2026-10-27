@@ -86,5 +86,53 @@ RSpec.describe "Api::V1::Forecasts", type: :request do
       expect(response.parsed_body).to eq("error" => "Unit must be fahrenheit or celsius")
     end
 
+    it "returns cached true on subsequent requests for the same zip code",
+       vcr: { cassette_name: "forecasts/success_fahrenheit" } do
+      get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["cached"]).to eq(false)
+
+      get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS }
+      expect(response).to have_http_status(:ok)
+      body = response.parsed_body
+      expect(body["cached"]).to eq(true)
+      expect(body["zip_code"]).to eq(ForecastHelpers::ZIP_CODE)
+      expect(body["current_temperature"]).to eq(57.5)
+      expect(a_request(:get, %r{https://api\.open-meteo\.com/v1/forecast})).to have_been_made.once
+    end
+
+    it "expires cached forecasts after 30 minutes",
+       vcr: { cassette_name: "forecasts/success_fahrenheit" } do
+      get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS }
+      expect(response.parsed_body["cached"]).to eq(false)
+
+      travel 31.minutes do
+        get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS }
+        expect(response.parsed_body["cached"]).to eq(false)
+        expect(a_request(:get, %r{https://api\.open-meteo\.com/v1/forecast})).to have_been_made.twice
+      end
+    end
+
+    it "caches forecasts separately per temperature unit",
+       vcr: { cassette_name: "forecasts/success_both_units" } do
+      get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS, unit: "fahrenheit" }
+      expect(response.parsed_body).to include("cached" => false, "temperature_unit" => "fahrenheit")
+
+      get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS, unit: "celsius" }
+      expect(response.parsed_body).to include("cached" => false, "temperature_unit" => "celsius")
+
+      get "/api/v1/forecasts", params: { address: ForecastHelpers::ADDRESS, unit: "celsius" }
+      expect(response.parsed_body).to include("cached" => true, "temperature_unit" => "celsius")
+
+      expect(
+        a_request(:get, %r{https://api\.open-meteo\.com/v1/forecast})
+          .with(query: hash_including("temperature_unit" => "fahrenheit"))
+      ).to have_been_made.once
+      expect(
+        a_request(:get, %r{https://api\.open-meteo\.com/v1/forecast})
+          .with(query: hash_including("temperature_unit" => "celsius"))
+      ).to have_been_made.once
+    end
+
   end
 end
