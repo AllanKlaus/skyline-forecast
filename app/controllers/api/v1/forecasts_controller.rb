@@ -11,19 +11,28 @@ module Api
       rescue_from Errors::UpstreamError, with: :render_bad_gateway
 
       def show
-        address = params[:address].to_s.strip
-        raise Errors::BadRequestError, "Address is required" if address.blank?
-
-        temperature_unit = params[:unit].to_s.strip.downcase.presence || "fahrenheit"
-        unless ALLOWED_TEMPERATURE_UNITS.include?(temperature_unit)
-          raise Errors::BadRequestError, "Unit must be fahrenheit or celsius"
-        end
-
-        result = ForecastLookup.call(address: address, temperature_unit: temperature_unit)
-        render json: result, status: :ok
+        render json: forecast_result, status: :ok
       end
 
       private
+
+      def forecast_result
+        ForecastLookup.call(address: address, temperature_unit: temperature_unit)
+      end
+
+      def address
+        value = params[:address].to_s.strip
+        raise Errors::BadRequestError, "Address is required" if value.blank?
+
+        value
+      end
+
+      def temperature_unit
+        value = params[:unit].to_s.strip.downcase.presence || "fahrenheit"
+        return value if ALLOWED_TEMPERATURE_UNITS.include?(value)
+
+        raise Errors::BadRequestError, "Unit must be fahrenheit or celsius"
+      end
 
       def render_bad_request(exception)
         render json: { error: exception.message }, status: :bad_request

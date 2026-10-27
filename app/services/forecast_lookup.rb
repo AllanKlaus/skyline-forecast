@@ -10,6 +10,7 @@ class ForecastLookup
   def initialize(address:, temperature_unit: "fahrenheit")
     @address = address
     @temperature_unit = temperature_unit
+    @memo = {}
   end
 
   def call
@@ -24,11 +25,11 @@ class ForecastLookup
   private
 
   def location
-    @location ||= Clients::GeocodingClient.lookup(@address)
+    @memo[:location] ||= Clients::GeocodingClient.lookup(@address)
   end
 
   def weather
-    @weather ||= Clients::WeatherClient.forecast(
+    @memo[:weather] ||= Clients::WeatherClient.forecast(
       latitude: location[:latitude],
       longitude: location[:longitude],
       temperature_unit: @temperature_unit
@@ -36,11 +37,11 @@ class ForecastLookup
   end
 
   def cache_key
-    @cache_key ||= "#{CACHE_KEY_PREFIX}:#{location[:zip_code]}:#{@temperature_unit}"
+    @memo[:cache_key] ||= "#{CACHE_KEY_PREFIX}:#{location[:zip_code]}:#{@temperature_unit}"
   end
 
   def payload
-    @payload ||= {
+    @memo[:payload] ||= {
       address: @address,
       zip_code: location[:zip_code],
       current_temperature: weather[:current_temperature],

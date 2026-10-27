@@ -3,18 +3,11 @@ module Clients
     BASE_URL = "https://nominatim.openstreetmap.org".freeze
 
     def self.lookup(address)
-      new.lookup(address)
+      new(http_client: default_http_client).lookup(address)
     end
 
-    def initialize(http_client: nil)
-      user_agent = ENV.fetch("GEOCODING_USER_AGENT", "weather-forecast-api/1.0")
-      @http_client = http_client || HttpClient.new(
-        base_url: BASE_URL,
-        headers: {
-          "User-Agent" => user_agent,
-          "Accept" => "application/json"
-        }
-      )
+    def initialize(http_client:)
+      @http_client = http_client
     end
 
     def lookup(address)
@@ -28,6 +21,18 @@ module Clients
     end
 
     private
+
+    def self.default_http_client
+      user_agent = ENV.fetch("GEOCODING_USER_AGENT", "weather-forecast-api/1.0")
+      HttpClient.new(
+        base_url: BASE_URL,
+        headers: {
+          "User-Agent" => user_agent,
+          "Accept" => "application/json"
+        }
+      )
+    end
+    private_class_method :default_http_client
 
     def results
       @results ||= @http_client.get(

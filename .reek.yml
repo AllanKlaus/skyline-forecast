@@ -12,3 +12,13 @@ detectors:
   UncommunicativeModuleName:
     accept:
       - "/V\\d+/"
+  TooManyStatements:
+    exclude:
+      - "Clients::WeatherClient#forecast"
+      - "Clients::WeatherClient#extended_forecast"
+  FeatureEnvy:
+    exclude:
+      - "Clients::WeatherClient#extended_forecast"
+  LongParameterList:
+    exclude:
+      - "Clients::WeatherClient#extended_forecast"

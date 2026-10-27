@@ -7,32 +7,38 @@ module Clients
     READ_TIMEOUT = 10
 
     def initialize(base_url:, headers: {})
-      @connection = Faraday.new(url: base_url, headers: headers) do |faraday|
-        faraday.options.open_timeout = OPEN_TIMEOUT
-        faraday.options.timeout = READ_TIMEOUT
-        faraday.adapter Faraday.default_adapter
-      end
+      @connection = self.class.build_connection(base_url, headers)
     end
 
     def get(path, params: {})
       response = @connection.get(path, params)
       handle_response(response)
-    rescue Faraday::TimeoutError, Faraday::ConnectionFailed => e
-      raise Errors::TimeoutError, e.message
+    rescue Faraday::TimeoutError, Faraday::ConnectionFailed => error
+      raise Errors::TimeoutError, error.message
+    end
+
+    def self.build_connection(base_url, headers)
+      Faraday.new(url: base_url, headers: headers) do |connection|
+        options = connection.options
+        options.open_timeout = OPEN_TIMEOUT
+        options.timeout = READ_TIMEOUT
+        connection.adapter Faraday.default_adapter
+      end
     end
 
     private
 
     def handle_response(response)
-      case response.status
+      status = response.status
+      case status
       when 200..299
         parse_body(response.body)
       when 429
         raise Errors::RateLimitError, "Upstream rate limit exceeded"
       when 500..599
-        raise Errors::UpstreamError, "Upstream server error: #{response.status}"
+        raise Errors::UpstreamError, "Upstream server error: #{status}"
       else
-        raise Errors::UpstreamError, "Unexpected upstream status: #{response.status}"
+        raise Errors::UpstreamError, "Unexpected upstream status: #{status}"
       end
     end
 
