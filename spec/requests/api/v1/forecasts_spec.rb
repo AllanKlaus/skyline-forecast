@@ -2,18 +2,68 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Forecasts", type: :request do
   describe "GET /api/v1/forecasts" do
-    it "returns 400 when address is missing" do
+    it "returns 400 when both address and zip are missing" do
       get "/api/v1/forecasts"
 
       expect(response).to have_http_status(:bad_request)
-      expect(response.parsed_body).to eq("error" => "Address is required")
+      expect(response.parsed_body).to eq("error" => "Address or zip is required")
     end
 
-    it "returns 400 when address is blank" do
-      get "/api/v1/forecasts", params: { address: "   " }
+    it "returns 400 when address and zip are blank" do
+      get "/api/v1/forecasts", params: { address: "   ", zip: "  " }
 
       expect(response).to have_http_status(:bad_request)
-      expect(response.parsed_body).to eq("error" => "Address is required")
+      expect(response.parsed_body).to eq("error" => "Address or zip is required")
+    end
+
+    it "returns the forecast when zip is provided without address",
+       vcr: { cassette_name: "forecasts/success_zip_only" } do
+      get "/api/v1/forecasts", params: { zip: ForecastHelpers::ZIP_CODE }
+
+      expect(response).to have_http_status(:ok)
+      body = response.parsed_body
+      expect(body["zip_code"]).to eq(ForecastHelpers::ZIP_CODE)
+      expect(body["cached"]).to eq(false)
+      expect(body["current_temperature"]).to eq(57.5)
+      expect(body["high"]).to eq(67.1)
+      expect(body["low"]).to eq(50.0)
+      expect(body["temperature_unit"]).to eq("fahrenheit")
+      expect(body["condition"]).to eq("Overcast")
+    end
+
+    it "prefers zip for location and skips address geocoding when both are provided",
+       vcr: { cassette_name: "forecasts/success_zip_only" } do
+      get "/api/v1/forecasts",
+          params: { address: ForecastHelpers::ADDRESS, zip: ForecastHelpers::ZIP_CODE }
+
+      expect(response).to have_http_status(:ok)
+      body = response.parsed_body
+      expect(body["address"]).to eq(ForecastHelpers::ADDRESS)
+      expect(body["zip_code"]).to eq(ForecastHelpers::ZIP_CODE)
+      expect(body["cached"]).to eq(false)
+      expect(body["current_temperature"]).to eq(57.5)
+      expect(
+        a_request(:get, %r{https://nominatim\.openstreetmap\.org/search})
+          .with(query: hash_including("q" => ForecastHelpers::ZIP_CODE))
+      ).to have_been_made
+      expect(
+        a_request(:get, %r{https://nominatim\.openstreetmap\.org/search})
+          .with(query: hash_including("q" => ForecastHelpers::ADDRESS))
+      ).not_to have_been_made
+    end
+
+    it "caches forecasts using the provided zip code",
+       vcr: { cassette_name: "forecasts/success_zip_only" } do
+      get "/api/v1/forecasts",
+          params: { address: ForecastHelpers::ADDRESS, zip: ForecastHelpers::ZIP_CODE }
+      expect(response.parsed_body["cached"]).to eq(false)
+
+      get "/api/v1/forecasts",
+          params: { address: ForecastHelpers::ADDRESS, zip: ForecastHelpers::ZIP_CODE }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["cached"]).to eq(true)
+      expect(response.parsed_body["zip_code"]).to eq(ForecastHelpers::ZIP_CODE)
+      expect(a_request(:get, %r{https://api\.open-meteo\.com/v1/forecast})).to have_been_made.once
     end
 
     it "returns the forecast for a valid address",

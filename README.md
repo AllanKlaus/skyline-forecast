@@ -64,6 +64,17 @@ curl "http://localhost:3000/api/v1/forecasts?address=1600%20Amphitheatre%20Parkw
 
 Query params: `address` (required), `unit` (`fahrenheit` or `celsius`, default `fahrenheit`).
 
+### Zip code accuracy
+
+Geocoding an address does not always return the correct location. For example,
+`avenida nossa senhora de fatima, praia grande, sp, brazil` should resolve near
+zip `11706300`, but the upstream geocoder may return a point tied to `12305011`
+more than 200 km away.
+
+To correct that, the API will accept an optional `zip` query parameter. When
+`zip` is present it must take priority over `address` for locating the forecast
+(skipping address geocoding).
+
 Example success response:
 
 ```json
