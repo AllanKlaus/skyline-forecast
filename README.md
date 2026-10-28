@@ -110,6 +110,57 @@ Example success response:
 | 502 | Upstream timeout, rate limit, DNS failure, or 5xx |
 
 
+## Architecture, caching, and scale
+
+### Architectural trade-offs
+
+- **Zip-keyed cache vs address-keyed cache.** Forecasts are cached by
+  `forecast:zip:<zip>:<unit>`. Zip granularity raises hit rates for nearby
+  addresses that share a postal code, at the cost of slightly coarser weather
+  than a per-coordinate key. When clients pass `zip`, location and cache key
+  both come from that zip (address geocoding is skipped), so the key always
+  matches the coordinates that were forecast.
+- **Thin controllers, service objects.** Controllers validate input and map
+  domain errors to HTTP statuses. `ForecastLookup` owns geocode → weather →
+  cache orchestration so the HTML UI and JSON API share one path.
+- **Hybrid app instead of API-only.** The same process serves `/` and
+  `/api/v1/forecasts`. That keeps the take-home deployable as one container;
+  a larger system could split the UI behind a CDN or BFF without changing the
+  lookup service.
+- **Upstream choices.** Nominatim geocodes addresses; Open-Meteo supplies
+  forecasts. Both are called synchronously. Latency and rate limits are
+  accepted in exchange for no vendor API keys in the default setup.
+
+### Cache eviction policies
+
+- **TTL eviction (primary).** Entries expire after **30 minutes**
+  (`ForecastLookup::CACHE_TTL`). There is no manual invalidate endpoint; stale
+  data ages out automatically, which matches the assignment’s freshness window.
+- **Unit partitioning.** Fahrenheit and Celsius payloads are separate keys, so
+  a unit switch never serves the wrong scale from cache.
+- **Redis as the store.** Production/development use Redis so eviction and
+  memory pressure are handled by the cache server.
+- **No write-through DB.** Forecasts are ephemeral; SQLite is only for Rails
+  defaults.
+
+### Concurrency and scaling under heavy load
+
+- **Stampede protection.** `race_condition_ttl: 10.seconds` lets Rails serve a
+  slightly stale value while one process refreshes an expiring key, reducing
+  thundering-herd hits to Nominatim/Open-Meteo when many clients share a zip.
+- **Stateless web tier.** Request handling does not keep forecast state in
+  process memory. Horizontal scale-out is “add Puma/web replicas behind a
+  load balancer,” with all replicas pointing at the same Redis URL.
+- **Shared Redis for correctness.** Cache hits are consistent across instances
+  only because the key space lives in Redis. Local memory caches would fragment
+  under multi-node load and are avoided outside tests.
+- **Upstream as the bottleneck.** Under sustained heavy load the limit is
+  usually geocoder/weather quotas and latency, not Rails CPU. Caching by zip
+  cuts repeat upstream work.
+- **Puma concurrency.** Each worker handles concurrent requests; Redis
+  operations are short. Long upstream calls occupy a thread/worker slot, so
+  sizing should account for external p95 latency, not only app code.
+
 ## Testing and quality
 
 ```bash
