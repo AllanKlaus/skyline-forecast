@@ -1,0 +1,93 @@
+<header class="hero">
+  <p class="brand">Skyline Forecast</p>
+  <h1>Check the weather by address or zip</h1>
+  <p class="lede">Look up current conditions and a multi-day outlook. Results are cached by zip for thirty minutes.</p>
+</header>
+
+<section class="search">
+  <%= form_with url: root_path, method: :get, local: true, class: "search-form" do %>
+    <label>
+      <span>Address</span>
+      <input type="text" name="address" value="<%= params[:address] %>" placeholder="1600 Amphitheatre Parkway, Mountain View, CA">
+    </label>
+
+    <label>
+      <span>Zip</span>
+      <input type="text" name="zip" value="<%= params[:zip] %>" placeholder="94043">
+    </label>
+
+    <label>
+      <span>Unit</span>
+      <select name="unit">
+        <option value="fahrenheit" <%= "selected" if params[:unit].blank? || params[:unit] == "fahrenheit" %>>Fahrenheit</option>
+        <option value="celsius" <%= "selected" if params[:unit] == "celsius" %>>Celsius</option>
+      </select>
+    </label>
+
+    <button type="submit">Search</button>
+  <% end %>
+</section>
+
+<% if @error.present? %>
+  <p class="error" role="alert"><%= @error %></p>
+<% end %>
+
+<% if @forecast.present? %>
+  <section class="results">
+    <h2>Current conditions</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th scope="row">Address</th>
+          <td><%= @forecast[:address] %></td>
+        </tr>
+        <tr>
+          <th scope="row">Zip</th>
+          <td><%= @forecast[:zip_code] %></td>
+        </tr>
+        <tr>
+          <th scope="row">Cached</th>
+          <td><%= @forecast[:cached] %></td>
+        </tr>
+        <tr>
+          <th scope="row">Temperature</th>
+          <td><%= @forecast[:current_temperature] %> °<%= @forecast[:temperature_unit] == "celsius" ? "C" : "F" %></td>
+        </tr>
+        <tr>
+          <th scope="row">High</th>
+          <td><%= @forecast[:high] %></td>
+        </tr>
+        <tr>
+          <th scope="row">Low</th>
+          <td><%= @forecast[:low] %></td>
+        </tr>
+        <tr>
+          <th scope="row">Condition</th>
+          <td><%= @forecast[:condition] %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Extended forecast</h2>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">High</th>
+          <th scope="col">Low</th>
+          <th scope="col">Condition</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% Array(@forecast[:extended_forecast]).each do |day| %>
+          <tr>
+            <td><%= day[:date] || day["date"] %></td>
+            <td><%= day[:high] || day["high"] %></td>
+            <td><%= day[:low] || day["low"] %></td>
+            <td><%= day[:condition] || day["condition"] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+<% end %>

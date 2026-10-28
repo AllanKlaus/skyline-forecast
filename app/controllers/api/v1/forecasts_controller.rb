@@ -3,6 +3,8 @@ module Api
     class ForecastsController < ApplicationController
       ALLOWED_TEMPERATURE_UNITS = %w[fahrenheit celsius].freeze
 
+      skip_forgery_protection
+
       rescue_from Errors::BadRequestError, with: :render_bad_request
       rescue_from Errors::InvalidAddressError, with: :render_unprocessable
       rescue_from Errors::InvalidResponseError, with: :render_unprocessable

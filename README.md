@@ -1,6 +1,9 @@
 # Weather Forecast API
 
-Rails API that accepts an address, resolves its zip code, returns forecast data, and caches results in Redis for 30 minutes.
+Rails app with a JSON API and a small HTML UI. It accepts an address or zip code,
+returns forecast data, and caches results in Redis for 30 minutes.
+
+Open `http://localhost:3000/` for the search form, or call `/api/v1/forecasts`.
 
 ## Requirements
 
