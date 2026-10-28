@@ -1,0 +1,89 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://nominatim.openstreetmap.org/search?addressdetails=1&format=json&limit=1&q=94043
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - weather-forecast-api/1.0 (contato@allanklaus.com.br)
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '790'
+      Content-Type:
+      - application/json; charset=utf-8
+      Server:
+      - gunicorn/asgi
+      X-Nominatim-Server:
+      - dulcy.openstreetmap.org
+      Accept-Ranges:
+      - bytes
+      Age:
+      - '0'
+      Date:
+      - Wed, 28 Oct 2026 02:00:35 GMT
+      Via:
+      - 1.1 varnish
+      X-Served-By:
+      - cache-gru-sbgr1930081-GRU
+      X-Cache:
+      - MISS
+      X-Cache-Hits:
+      - '0'
+      X-Timer:
+      - S1793152834.414689,VS0,VE647
+      Vary:
+      - accept-language, Accept-Encoding
+      Strict-Transport-Security:
+      - max-age=300
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        W3sicGxhY2VfaWQiOjMyMzYxOTUyNiwibGljZW5jZSI6IkRhdGEgwqkgT3BlblN0cmVldE1hcCBjb250cmlidXRvcnMsIE9EYkwgMS4wLiBodHRwOi8vb3NtLm9yZy9jb3B5cmlnaHQiLCJvc21fdHlwZSI6IndheSIsIm9zbV9pZCI6MjM3MzM2NTksImxhdCI6IjM3LjQyMjQ4NTgiLCJsb24iOiItMTIyLjA4NTU4NDYiLCJjbGFzcyI6ImJ1aWxkaW5nIiwidHlwZSI6ImNvbW1lcmNpYWwiLCJwbGFjZV9yYW5rIjozMCwiaW1wb3J0YW5jZSI6Ni4yNzc5NDMwODM4NDM3NzRlLTA1LCJhZGRyZXNzdHlwZSI6ImJ1aWxkaW5nIiwibmFtZSI6Ikdvb2dsZSBCdWlsZGluZyA0MSIsImRpc3BsYXlfbmFtZSI6Ikdvb2dsZSBCdWlsZGluZyA0MSwgMTYwMCwgQW1waGl0aGVhdHJlIFBhcmt3YXksIE1vdW50YWluIFZpZXcsIFNhbnRhIENsYXJhIENvdW50eSwgQ2FsaWZvcm5pYSwgOTQwNDMsIFVuaXRlZCBTdGF0ZXMiLCJhZGRyZXNzIjp7ImJ1aWxkaW5nIjoiR29vZ2xlIEJ1aWxkaW5nIDQxIiwiaG91c2VfbnVtYmVyIjoiMTYwMCIsInJvYWQiOiJBbXBoaXRoZWF0cmUgUGFya3dheSIsImNpdHkiOiJNb3VudGFpbiBWaWV3IiwiY291bnR5IjoiU2FudGEgQ2xhcmEgQ291bnR5Iiwic3RhdGUiOiJDYWxpZm9ybmlhIiwiSVNPMzE2Ni0yLWx2bDQiOiJVUy1DQSIsInBvc3Rjb2RlIjoiOTQwNDMiLCJjb3VudHJ5IjoiVW5pdGVkIFN0YXRlcyIsImNvdW50cnlfY29kZSI6InVzIn0sImJvdW5kaW5nYm94IjpbIjM3LjQyMjExMjQiLCIzNy40MjI4NTA4IiwiLTEyMi4wODU5ODY4IiwiLTEyMi4wODUxNTExIl19XQ==
+  recorded_at: Wed, 28 Oct 2026 02:00:35 GMT
+- request:
+    method: get
+    uri: https://api.open-meteo.com/v1/forecast?current=temperature_2m&daily=temperature_2m_max,temperature_2m_min,weather_code&forecast_days=7&latitude=37.4224858&longitude=-122.0855846&temperature_unit=fahrenheit&timezone=auto
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Faraday v2.15.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 28 Oct 2026 02:00:35 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJsYXRpdHVkZSI6MzcuNDE2MiwibG9uZ2l0dWRlIjotMTIyLjA4MDMsImdlbmVyYXRpb250aW1lX21zIjowLjQyMzA3Mzc2ODYxNTcyMjY2LCJ1dGNfb2Zmc2V0X3NlY29uZHMiOi0yNTIwMCwidGltZXpvbmUiOiJBbWVyaWNhL0xvc19BbmdlbGVzIiwidGltZXpvbmVfYWJicmV2aWF0aW9uIjoiR01ULTciLCJlbGV2YXRpb24iOjExLjAsImN1cnJlbnRfdW5pdHMiOnsidGltZSI6Imlzbzg2MDEiLCJpbnRlcnZhbCI6InNlY29uZHMiLCJ0ZW1wZXJhdHVyZV8ybSI6IsKwRiJ9LCJjdXJyZW50Ijp7InRpbWUiOiIyMDI2LTEwLTI3VDE5OjAwIiwiaW50ZXJ2YWwiOjkwMCwidGVtcGVyYXR1cmVfMm0iOjU3LjV9LCJkYWlseV91bml0cyI6eyJ0aW1lIjoiaXNvODYwMSIsInRlbXBlcmF0dXJlXzJtX21heCI6IsKwRiIsInRlbXBlcmF0dXJlXzJtX21pbiI6IsKwRiIsIndlYXRoZXJfY29kZSI6IndtbyBjb2RlIn0sImRhaWx5Ijp7InRpbWUiOlsiMjAyNi0xMC0yNyIsIjIwMjYtMTAtMjgiLCIyMDI2LTEwLTI5IiwiMjAyNi0xMC0zMCIsIjIwMjYtMTAtMzEiLCIyMDI2LTExLTAxIiwiMjAyNi0xMS0wMiJdLCJ0ZW1wZXJhdHVyZV8ybV9tYXgiOls2Ny4xLDY4LjAsNjguNSw2OC4zLDY1LjQsNzIuMyw3My4zXSwidGVtcGVyYXR1cmVfMm1fbWluIjpbNTAuMCw0NS45LDQ2LjEsNTQuOSw1NC40LDU2LjAsNTguNV0sIndlYXRoZXJfY29kZSI6WzMsMywzLDMsMywzLDNdfX0=
+  recorded_at: Wed, 28 Oct 2026 02:00:35 GMT
+recorded_with: VCR 6.4.0

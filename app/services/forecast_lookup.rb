@@ -3,12 +3,13 @@ class ForecastLookup
   RACE_CONDITION_TTL = 10.seconds
   CACHE_KEY_PREFIX = "forecast:zip".freeze
 
-  def self.call(address:, temperature_unit: "fahrenheit")
-    new(address:, temperature_unit:).call
+  def self.call(address: nil, zip: nil, temperature_unit: "fahrenheit")
+    new(address:, zip:, temperature_unit:).call
   end
 
-  def initialize(address:, temperature_unit: "fahrenheit")
-    @address = address
+  def initialize(address: nil, zip: nil, temperature_unit: "fahrenheit")
+    @address = address.presence
+    @zip = zip.presence
     @temperature_unit = temperature_unit
     @memo = {}
   end
@@ -19,13 +20,31 @@ class ForecastLookup
       cached = false
       payload
     end
-    result.merge(address: @address, cached:)
+    result.merge(address: display_address, cached:)
   end
 
   private
 
+  def display_address
+    @address || @zip
+  end
+
   def location
-    @memo[:location] ||= Clients::GeocodingClient.lookup(@address)
+    @memo[:location] ||= resolve_location
+  end
+
+  def resolve_location
+    if @zip
+      # Prefer zip: skip address geocoding (address alone can resolve hundreds of km away).
+      found = Clients::GeocodingClient.lookup(@zip)
+      {
+        zip_code: @zip,
+        latitude: found[:latitude],
+        longitude: found[:longitude]
+      }
+    else
+      Clients::GeocodingClient.lookup(@address)
+    end
   end
 
   def weather
@@ -42,7 +61,7 @@ class ForecastLookup
 
   def payload
     @memo[:payload] ||= {
-      address: @address,
+      address: display_address,
       zip_code: location[:zip_code],
       current_temperature: weather[:current_temperature],
       high: weather[:high],

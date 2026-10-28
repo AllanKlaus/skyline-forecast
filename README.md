@@ -60,20 +60,26 @@ Redis must be reachable at `REDIS_URL` (default `redis://localhost:6379/0`). The
 ```bash
 curl "http://localhost:3000/api/v1/forecasts?address=1600%20Amphitheatre%20Parkway,%20Mountain%20View,%20CA%2094043"
 curl "http://localhost:3000/api/v1/forecasts?address=1600%20Amphitheatre%20Parkway,%20Mountain%20View,%20CA%2094043&unit=celsius"
+curl "http://localhost:3000/api/v1/forecasts?zip=94043"
+curl "http://localhost:3000/api/v1/forecasts?address=avenida%20nossa%20senhora%20de%20fatima,%20praia%20grande,%20sp,%20brazil&zip=11706300"
 ```
 
-Query params: `address` (required), `unit` (`fahrenheit` or `celsius`, default `fahrenheit`).
+Query params: `address` and/or `zip` (at least one required), `unit` (`fahrenheit` or `celsius`, default `fahrenheit`).
 
 ### Zip code accuracy
 
-Geocoding an address does not always return the correct location. For example,
-`avenida nossa senhora de fatima, praia grande, sp, brazil` should resolve near
-zip `11706300`, but the upstream geocoder may return a point tied to `12305011`
-more than 200 km away.
+Geocoding an address does not always return the correct zip code. For example,
+`avenida nossa senhora de fatima, praia grande, sp, brazil` should resolve to
+`11706300`, but the upstream geocoder may return `12305011` instead.
 
-To correct that, the API will accept an optional `zip` query parameter. When
-`zip` is present it must take priority over `address` for locating the forecast
-(skipping address geocoding).
+Pass `zip` directly when you already know the correct value. When `zip` is
+present it takes priority: coordinates are resolved from the zip only, and the
+address string is never sent to the geocoder (it remains display text only).
+
+- `zip` alone resolves location from the zip and caches under that zip.
+- `address` + `zip` still resolves location from the zip (skipping address
+  geocoding), returns the address for display, and caches under the provided zip.
+- `address` alone keeps the original geocode-from-address behavior.
 
 Example success response:
 
@@ -96,9 +102,10 @@ Example success response:
 
 | Status | Meaning |
 |--------|---------|
-| 400 | Missing or blank address, or invalid `unit` |
+| 400 | Missing address and zip, or invalid `unit` |
 | 422 | Address not found, missing zip, or invalid upstream payload |
 | 502 | Upstream timeout, rate limit, DNS failure, or 5xx |
+
 
 ## Testing and quality
 
